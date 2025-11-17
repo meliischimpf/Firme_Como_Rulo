@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="es" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <title>Firme como Rulo</title>
+    <title>Seguimiento - Firme como Rulo</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sonner@latest/dist/sonner.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../resources/menu/sidebar.css">
     <link rel="stylesheet" href="../../resources/menu/menu.css">
+    <link rel="stylesheet" href="../../resources/menu/forms.css">
+    <link rel="stylesheet" href="../../resources/menu/seguimiento.css">
     <link rel="icon" href="../../resources/img/favicon.ico" type="image/x-icon">
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -82,9 +85,11 @@
     </div>
 
      <div class="main-container">
-      <h2>Seguimiento</h2>
-      
-    <?php
+        <div class="header-actions">
+            <h2><i class='bx bx-trending-up'></i> Seguimiento de Alumnos</h2>
+        </div>
+        
+        <?php
         require_once __DIR__ . '/../../conexion.php';
         require_once __DIR__ . '/../../clases/Alumno.php';
         require_once __DIR__ . '/../../clases/Materia.php';
@@ -93,9 +98,19 @@
         $db = new Database();
         $conn = $db->connect();
         
+        $alumno = new Alumno('', '', '', '', '', null);
+        $materia = new Materia('', '');
+        $instituto = new Instituto('', '', '', null);
+        
         $result_institutos = $instituto->obtenerInstitutos();
         $materias = [];
-    
+        $alumnos = [];
+        $total_clases = 0;
+        $alumnos_inscriptos = 0;
+        $promedio_asistencia = 0;
+        $porcentaje_aprobados = 0;
+        $total_asistencia = 0;
+        $aprobados = 0;
 
         // selección de instituto
         if (isset($_POST['id_instituto']) && !empty($_POST['id_instituto'])) {
@@ -109,106 +124,336 @@
             $id_materia = $_POST['id_materia'];
             $materia = Materia::crearMateriaDesdeID($id_materia);
             $alumnos_data = $materia->obtenerAlumnosPorMateria($id_materia);
-
+            $alumnos_inscriptos = count($alumnos_data);
+            $total_clases = $alumno->contarTotalClases($id_materia);
 
             // cada alumno en una instancia de Alumno
             foreach ($alumnos_data as $data) {
-                $alumnos[] = new Alumno(
+                $alumno_obj = new Alumno(
                     $data['apellido_alumno'],
                     $data['nombre_alumno'],
-                    isset($data['dni']) ? $data['dni'] : null,
-                    isset($data['mail']) ? $data['mail'] : null,
-                    isset($data['fecha_nacimiento']) ? $data['fecha_nacimiento'] : null,
-                    isset($data['id_alumno']) ? $data['id_alumno'] : null 
+                    $data['dni'] ?? '',
+                    $data['mail'] ?? '',
+                    $data['fecha_nacimiento'] ?? '',
+                    $data['id_alumno'] ?? null
                 );
-            }
-        }
-    ?>
-
-        <form method="post" action="">
-            <label for="id_instituto">Seleccionar Instituto:</label>
-            <select name="id_instituto" id="id_instituto" onchange="this.form.submit()" required>
-                <option value="">Seleccionar Instituto</option>
-                <?php
-                if (!empty($result_institutos)) {
-                    foreach ($result_institutos as $row_instituto) {
-                        $selected = (isset($id_instituto) && $id_instituto == $row_instituto["id_instituto"]) ? 'selected' : '';
-                        echo "<option value='" . $row_instituto["id_instituto"] . "' $selected>" . $row_instituto["nombre_instituto"] . "</option>";
-                    }
-                } else {
-                    echo "<option value=''>No hay institutos disponibles</option>";
+                
+                // Calcular estadísticas
+                $porcentaje = $alumno_obj->calcularPorcentajeAsistencia($alumno_obj->id_alumno, $id_materia);
+                $total_asistencia += $porcentaje;
+                
+                // Contar aprobados
+                $condicion = $alumno_obj->evaluarCondicion($alumno_obj->id_alumno, $id_materia, $id_instituto);
+                if (strpos(strtolower($condicion), 'regular') !== false || strpos(strtolower($condicion), 'aprobado') !== false) {
+                    $aprobados++;
                 }
-                ?>
-            </select>
+                
+                $alumnos[] = $alumno_obj;
+            }
+            
+            // Calcular promedios
+            $promedio_asistencia = $alumnos_inscriptos > 0 ? round($total_asistencia / $alumnos_inscriptos, 1) : 0;
+            $porcentaje_aprobados = $alumnos_inscriptos > 0 ? round(($aprobados / $alumnos_inscriptos) * 100, 1) : 0;
+        }
+        ?>
 
-            <?php if (!empty($materias)): ?>
-                <label for="id_materia">Seleccionar Materia:</label>
-                <select name="id_materia" id="id_materia" onchange="this.form.submit()">
-                    <option value="">Seleccionar Materia</option>
-                    <?php
-                    foreach ($materias as $materia) {
-                        $selected = (isset($id_materia) && $id_materia == $materia["id_materia"]) ? 'selected' : '';
-                        echo "<option value='" . $materia['id_materia'] . "' $selected>" . $materia['nombre_materia'] . "</option>";
-                    }
-                    ?>
-                </select>
-                <input type="hidden" name="id_instituto" value="<?php echo $id_instituto; ?>">
-            <?php endif; ?>
+        <form method="post" action="" class="filter-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_instituto" class="form-label">Instituto</label>
+                    <div class="select-wrapper">
+                        <select name="id_instituto" id="id_instituto" class="form-select" required onchange="this.form.submit()">
+                            <option value="">Seleccionar Instituto</option>
+                            <?php
+                            if (!empty($result_institutos)) {
+                                foreach ($result_institutos as $row_instituto) {
+                                    $selected = (isset($id_instituto) && $id_instituto == $row_instituto["id_instituto"]) ? 'selected' : '';
+                                    echo "<option value='" . htmlspecialchars($row_instituto["id_instituto"]) . "' $selected>" . 
+                                         htmlspecialchars($row_instituto["nombre_instituto"]) . "</option>";
+                                }
+                            } else {
+                                echo "<option value=''>No hay institutos disponibles</option>";
+                            }
+                            ?>
+                        </select>
+                        <i class='bx bx-chevron-down'></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_materia" class="form-label">Materia</label>
+                    <div class="select-wrapper">
+                        <select name="id_materia" id="id_materia" class="form-select" onchange="this.form.submit()" <?= empty($materias) ? 'disabled' : '' ?>>
+                            <option value="">Todas las materias</option>
+                            <?php if (!empty($materias)): ?>
+                                <?php foreach ($materias as $materia): ?>
+                                    <option value="<?= htmlspecialchars($materia['id_materia']) ?>" 
+                                            <?= (isset($id_materia) && $id_materia == $materia['id_materia']) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($materia['nombre_materia']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                        <i class='bx bx-chevron-down'></i>
+                    </div>
+                </div>
+                <input type="hidden" name="id_instituto" id="hidden_id_instituto" value="<?= htmlspecialchars($id_instituto ?? '') ?>">
+            </div>
         </form>
 
         <?php if (isset($id_materia) && !empty($alumnos)): ?>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <p class="stat-label"><i class='bx bx-group'></i> Alumnos Inscriptos</p>
+                    <p class="stat-value"><?php echo $alumnos_inscriptos; ?></p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-label"><i class='bx bx-calendar'></i> Total de Clases</p>
+                    <p class="stat-value"><?php echo $total_clases; ?></p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-label"><i class='bx bx-line-chart'></i> Asistencia Promedio</p>
+                    <p class="stat-value"><?php echo $promedio_asistencia; ?>%</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-label"><i class='bx bx-check-circle'></i> Aprobados</p>
+                    <p class="stat-value"><?php echo $porcentaje_aprobados; ?>%</p>
+                </div>
+            </div>
 
-                <form method="post" action="">
-                    <input type="hidden" name="id_materia" value="<?php echo $id_materia; ?>">
-                    <h2>Alumnos Inscriptos</h2>
-                    <h4>Cantidad de Clases:  <?php echo $alumno->contarTotalClases($id_materia); ?></h4>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Apellido y Nombre</th>
-                                <th>Presente</th>
-                                <th>Asistencia (%)</th>
-                                <th>Calificaciones</th>
-                                <th>Condición</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($alumnos as $alumno): ?>
-                                <tr>
-                                    <td><?php echo $alumno->apellido . ", " . $alumno->nombre; ?></td>
-                                    <td><?php echo $alumno->contarTotalClasesAlumno($alumno->id_alumno, $id_materia); ?></td>
-                                    <td><?php echo $alumno->calcularPorcentajeAsistencia($alumno->id_alumno, $id_materia); ?>%</td>
-                                    <td><?php $calificacion = $alumno->calificacion($alumno->id_alumno, $id_materia);
-                                                if ($calificacion) {
-                                                    echo 'Parcial 1: ' . $calificacion['parcial1'] . ' | Parcial 2: ' . $calificacion['parcial2'] . ' | Final: ' . $calificacion['final'];
-                                                } else {
-                                                    echo 'No disponible';
-                                                }
-                                                ?></td>
-                                    <td><?php echo $alumno->evaluarCondicion($alumno->id_alumno, $id_materia, $id_instituto); ?></td>
-                                    <td>    <a href="../editar/editar_alumno.php">
-                                                <button type="button" style="background-color: yellow; color: black;">Editar</button>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Asistencia</th>
+                            <th>Calificaciones</th>
+                            <th>Condición</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            <?php foreach ($alumnos as $alumno): 
+                                $porcentaje_asistencia = $alumno->calcularPorcentajeAsistencia($alumno->id_alumno, $id_materia);
+                                $clases_asistidas = $alumno->contarTotalClasesAlumno($alumno->id_alumno, $id_materia);
+                                $calificacion = $alumno->calificacion($alumno->id_alumno, $id_materia);
+                                $condicion = $alumno->evaluarCondicion($alumno->id_alumno, $id_materia, $id_instituto);
+                                
+                                // Determinar clase de condición para el estilo
+                                $clase_condicion = '';
+                                if (stripos($condicion, 'regular') !== false) {
+                                    $clase_condicion = 'status-regular';
+                                } elseif (stripos($condicion, 'condicional') !== false) {
+                                    $clase_condicion = 'status-condicional';
+                                } elseif (stripos($condicion, 'libre') !== false) {
+                                    $clase_condicion = 'status-libre';
+                                }
+                            ?>
+                                <tr class="alumno-row" data-nombre="<?php echo htmlspecialchars(strtolower($alumno->apellido . ' ' . $alumno->nombre)); ?>">
+                                    <td class="alumno-info">
+                                        <div class="alumno-avatar">
+                                            <?php echo strtoupper(substr($alumno->nombre, 0, 1) . substr($alumno->apellido, 0, 1)); ?>
+                                        </div>
+                                        <div>
+                                            <div class="alumno-nombre"><?php echo htmlspecialchars($alumno->apellido . ', ' . $alumno->nombre); ?></div>
+                                            <div class="alumno-email">
+                                                <?php 
+                                                $email = $alumno->email ?? 'sin-email@ejemplo.com';
+                                                echo htmlspecialchars($email); 
+                                                ?>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="asistencia">
+                                        <div class="attendance-progress">
+                                            <div class="progress-container">
+                                                <div class="progress-bar" style="width: <?php echo min(100, $porcentaje_asistencia); ?>%;">
+                                                    <span><?php echo $clases_asistidas; ?>/<?php echo $total_clases; ?></span>
+                                                </div>
+                                            </div>
+                                            <span><?php echo $porcentaje_asistencia; ?>%</span>
+                                        </div>
+                                    </td>
+                                    <td class="calificaciones">
+                                        <div class="grades-display">
+                                            <?php if ($calificacion): ?>
+                                                <div class="grade-item">
+                                                    <span class="grade-label">Parcial 1:</span>
+                                                    <span class="grade-value"><?php echo $calificacion['parcial1'] ?? '-'; ?></span>
+                                                </div>
+                                                <div class="grade-item">
+                                                    <span class="grade-label">Parcial 2:</span>
+                                                    <span class="grade-value"><?php echo $calificacion['parcial2'] ?? '-'; ?></span>
+                                                </div>
+                                                <div class="grade-item">
+                                                    <span class="grade-label">Final:</span>
+                                                    <span class="grade-value"><?php echo $calificacion['final'] ?? '-'; ?></span>
+                                                </div>
+                                            <?php else: ?>
+                                                <span class="text-muted">Sin calificaciones</span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge <?php echo $clase_condicion; ?>">
+                                            <?php echo htmlspecialchars($condicion); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="../editar/editar_alumno.php?id=<?php echo $alumno->id_alumno; ?>" class="btn-icon" title="Editar alumno">
+                                                <i class='bx bx-edit-alt'></i>
                                             </a>
-
-                                        <form action="" method="post">
-                                            <input type="hidden" name="id_materia" value="<?php echo $id_materia; ?>">
-                                            <input type="hidden" name="id_alumno" value="<?php echo $alumno->id_alumno; ?>">
-                                            <button type="button" onclick="darBaja(<?php echo $alumno->id_alumno; ?>)">Eliminar</button>
-                                        </form>
+                                            <button type="button" class="btn-icon delete" title="Eliminar alumno" onclick="darBaja(<?php echo $alumno->id_alumno; ?>)">
+                                                <i class='bx bx-trash'></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
-                </form>
+                </div>
+            </div>
             <?php elseif (isset($id_materia) && empty($alumnos)): ?>
-        <p>No hay alumnos registrados para esta materia.</p>
-<?php endif; ?>
+                <div class="empty-state">
+                    <i class='bx bx-user-x'></i>
+                    <h3>No hay alumnos registrados</h3>
+                    <p>No se encontraron alumnos para la materia seleccionada.</p>
+                    <a href="../registrar/registrar_alumno.php" class="btn btn-primary">
+                        <i class='bx bx-plus'></i> Agregar Alumno
+                    </a>
+                </div>
+            <?php else: ?>
+                <div class="empty-state">
+                    <i class='bx bx-select-multiple'></i>
+                    <h3>Selecciona un instituto y una materia</h3>
+                    <p>Para comenzar a ver el seguimiento, por favor selecciona un instituto y una materia de las listas desplegables.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
 
-    </body>
     <script src="https://cdn.jsdelivr.net/npm/sonner@latest/dist/sonner.umd.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.7/dist/tippy-bundle.umd.min.js"></script>
+    <script>
+    // Actualizar el hidden input cuando cambia el select de instituto
+    document.getElementById('id_instituto').addEventListener('change', function() {
+        document.getElementById('hidden_id_instituto').value = this.value;
+        // Deshabilitar el select de materia mientras se recarga
+        document.getElementById('id_materia').disabled = true;
+        // Enviar el formulario
+        this.form.submit();
+    });
+    // Habilitar/deshabilitar el select de materias según si hay instituto seleccionado
+    document.addEventListener('DOMContentLoaded', function() {
+        const institutoSelect = document.getElementById('id_instituto');
+        const materiaSelect = document.getElementById('id_materia');
+        const hiddenInstituto = document.getElementById('hidden_id_instituto');
+        
+        // Sincronizar el valor del hidden con el select al cargar la página
+        if (hiddenInstituto && hiddenInstituto.value) {
+            institutoSelect.value = hiddenInstituto.value;
+        }
+        
+        if (institutoSelect && materiaSelect) {
+            // Deshabilitar el select de materias si no hay instituto seleccionado
+            if (!institutoSelect.value) {
+                materiaSelect.disabled = true;
+            }
+            
+            // Actualizar el estado del select de materias cuando cambia el instituto
+            institutoSelect.addEventListener('change', function() {
+                if (this.value) {
+                    // Si se selecciona un instituto, se enviará el formulario
+                    this.form.submit();
+                } else {
+                    // Si se deselecciona el instituto, deshabilitar el select de materias
+                    materiaSelect.disabled = true;
+                }
+            });
+        }
+    });
+    </script>
     <script src="../../resources/menu/sidebar.js"></script>
     <script src="../../resources/menu/ingresar/darBaja.js"></script>
+    
+    <script>
+        // Inicializar Sonner para notificaciones
+        const toast = window.sonner;
+        
+        // Inicializar tooltips
+        if (typeof tippy !== 'undefined') {
+            tippy('[title]', {
+                content: (reference) => reference.getAttribute('title'),
+                theme: 'light',
+                animation: 'shift-away',
+                delay: [100, 0],
+                duration: [200, 150]
+            });
+        }
+        
+        // Función para buscar alumnos en la tabla
+        document.getElementById('searchInput')?.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.alumno-row');
+            
+            rows.forEach(row => {
+                const nombre = row.getAttribute('data-nombre') || '';
+                if (nombre.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+        
+        // Efecto hover en las filas
+        document.querySelectorAll('.alumno-row').forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px)';
+            });
+            
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+        });
+        
+        // Función para exportar a Excel
+        function exportToExcel() {
+            // Aquí iría la lógica para exportar a Excel
+            toast.info('Exportar a Excel', {
+                description: 'La función de exportación a Excel se está desarrollando',
+                position: 'top-right'
+            });
+        }
+        
+        // Mejorar la función darBaja existente
+        window.darBaja = function(idAlumno) {
+            if (confirm('¿Estás seguro de que deseas dar de baja a este alumno?')) {
+                // Mostrar estado de carga
+                const button = document.querySelector(`button[onclick*="${idAlumno}"]`);
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<i class="bx bx-loader bx-spin"></i> Procesando...';
+                button.disabled = true;
+                
+                // Simular petición AJAX
+                setTimeout(() => {
+                    // Aquí iría la llamada AJAX real
+                    toast.success('Alumno dado de baja', {
+                        description: 'El alumno ha sido dado de baja correctamente',
+                        position: 'top-right'
+                    });
+                    
+                    // Recargar la página después de 1.5 segundos
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                    
+                }, 1000);
+            }
+        };
+    </script>
+</body>
 </html>

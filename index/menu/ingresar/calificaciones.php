@@ -1,13 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="es" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <title>Firme como Rulo</title>
+    <title>Calificaciones - Firme como Rulo</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sonner@latest/dist/sonner.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="../../resources/menu/sidebar.css">
     <link rel="stylesheet" href="../../resources/menu/menu.css">
+    <link rel="stylesheet" href="../../resources/menu/forms.css">
+    <link rel="stylesheet" href="../../resources/menu/calificaciones.css">
     <link rel="icon" href="../../resources/img/favicon.ico" type="image/x-icon">
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -82,7 +86,9 @@
     </div>
     
      <div class="main-container">
-      <h2>Calificaciones</h2>
+        <div class="header-actions">
+            <h2><i class='bx bx-trophy'></i> Calificaciones</h2>
+        </div>
 
       <?php
         require_once __DIR__ . '/../../conexion.php';
@@ -113,40 +119,45 @@
         }
         ?>
 
-    <form method="post" action="">
-        <label for="id_instituto">Seleccionar Instituto:</label>
-        <select name="id_instituto" id="id_instituto" onchange="this.form.submit()" required>
-            <option value="">Seleccionar Instituto</option>
-
-            <?php
-            if (!empty($result_institutos)) {
-                foreach ($result_institutos as $row_instituto) {
-                    $selected = (isset($id_instituto) && $id_instituto == $row_instituto["id_instituto"]) ? 'selected' : '';
-                    echo "<option value='" . $row_instituto["id_instituto"] . "' $selected>" . $row_instituto["nombre_instituto"] . "</option>";
-                }
-            } else {
-                echo "<option value=''>No hay institutos disponibles</option>";
-            }
-            ?>
-        </select>
+    <form method="post" action="" class="form-filters">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="id_instituto">Instituto</label>
+                <select name="id_instituto" id="id_instituto" class="select-custom" onchange="this.form.submit()" required>
+                    <option value="">Seleccionar Instituto</option>
+                    <?php
+                    if (!empty($result_institutos)) {
+                        foreach ($result_institutos as $row_instituto) {
+                            $selected = (isset($id_instituto) && $id_instituto == $row_instituto["id_instituto"]) ? 'selected' : '';
+                            echo "<option value='" . htmlspecialchars($row_instituto["id_instituto"]) . "' $selected>" . 
+                                 htmlspecialchars($row_instituto["nombre_instituto"]) . "</option>";
+                        }
+                    } else {
+                        echo "<option value=''>No hay institutos disponibles</option>";
+                    }
+                    ?>
+                </select>
+            </div>
     
 
-    <?php if (!empty($materias)): ?>
-        <form method="post" action="">
-            <label for="id_materia">Seleccionar Materia:</label>
-            <select name="id_materia" id="id_materia" onchange="this.form.submit()">
-                <option value="">Seleccionar Materia</option>
-
-                <?php
-                foreach ($materias as $materia) {
-                    $selected = (isset($id_materia) && $id_materia == $materia["id_materia"]) ? 'selected' : '';
-                    echo "<option value='" . $materia['id_materia'] . "' $selected>" . $materia['nombre_materia'] . "</option>";
-                }
-                ?>
-            </select>
-            <input type="hidden" name="id_instituto" value="<?php echo $id_instituto; ?>">
-        </form>
-    <?php endif; ?>
+            <?php if (!empty($materias)): ?>
+                <div class="form-group">
+                    <label for="id_materia">Materia</label>
+                    <select name="id_materia" id="id_materia" class="select-custom" onchange="this.form.submit()" <?php echo empty($materias) ? 'disabled' : ''; ?>>
+                        <option value="">Seleccionar Materia</option>
+                        <?php
+                        foreach ($materias as $materia_item) {
+                            $selected = (isset($id_materia) && $id_materia == $materia_item["id_materia"]) ? 'selected' : '';
+                            echo "<option value='" . htmlspecialchars($materia_item['id_materia']) . "' $selected>" . 
+                                 htmlspecialchars($materia_item['nombre_materia']) . "</option>";
+                        }
+                        ?>
+                    </select>
+                    <input type="hidden" name="id_instituto" value="<?php echo htmlspecialchars($id_instituto); ?>">
+                </div>
+            <?php endif; ?>
+        </div>
+    </form>
            
     
     <?php
@@ -166,41 +177,202 @@
 
 
     <?php if (isset($id_materia) && !empty($alumnos)): ?>
-        <form method="post" action="">
-            <input type="hidden" name="id_materia" value="<?php echo $id_materia; ?>">
-            <h4>Ingresar Notas</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Apellido y Nombre</th>
-                        <th>Parcial 1</th>
-                        <th>Parcial 2</th>
-                        <th>Final</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($alumnos as $alumno): ?>
-                        <tr>
-                            <td><?php echo $alumno['apellido_alumno'] . ", " . $alumno['nombre_alumno']; ?></td>
-                            <td><input type="text" name="notas[<?php echo $alumno['id_alumno']; ?>][parcial1]" value=""></td>
-                            <td><input type="text" name="notas[<?php echo $alumno['id_alumno']; ?>][parcial2]" value=""></td>
-                            <td><input type="text" name="notas[<?php echo $alumno['id_alumno']; ?>][final]" value=""></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-            <input type="submit" value="Guardar Notas">
-        </form>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class='bx bx-book-alt'></i> Ingresar Calificaciones</h3>
+                <p class="card-subtitle">Materia: <?php echo htmlspecialchars($materia->nombre); ?></p>
+            </div>
+            <div class="card-body">
+                <form method="post" action="" id="form-calificaciones" onsubmit="return false;">
+                    <input type="hidden" name="id_materia" value="<?php echo htmlspecialchars($id_materia); ?>">
+                    
+                    <div class="table-responsive">
+                        <table class="grade-table">
+                            <thead>
+                                <tr>
+                                    <th>Estudiante</th>
+                                    <th>Parcial 1</th>
+                                    <th>Parcial 2</th>
+                                    <th>Final</th>
+                                    <th>Promedio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                foreach ($alumnos as $index => $alumno): 
+                                    $alumnoObj = new Alumno('', '', '', '', '', $alumno['id_alumno']);
+                                    $notas = $alumnoObj->calificacion($alumno['id_alumno'], $id_materia);
+                                    $promedio = '';
+                                    if (!empty($notas) && $notas['parcial1'] !== "Nota no disponible" && $notas['parcial2'] !== "Nota no disponible") {
+                                        $promedio = number_format(($notas['parcial1'] + $notas['parcial2']) / 2, 1);
+                                    }
+                                ?>
+                                    <tr class="student-row" style="animation-delay: <?php echo $index * 0.05; ?>s">
+                                        <td>
+                                            <div class="student-info">
+                                                <span class="student-name">
+                                                    <?php echo htmlspecialchars($alumno['apellido_alumno'] . ", " . $alumno['nombre_alumno']); ?>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-with-icon">
+                                                <input type="number" min="0" max="10" step="0.1" 
+                                                    name="notas[<?php echo $alumno['id_alumno']; ?>][parcial1]" 
+                                                    value="<?php echo !empty($notas['parcial1']) ? htmlspecialchars($notas['parcial1']) : ''; ?>" 
+                                                    class="grade-input" 
+                                                    onchange="calcularPromedio(this)"
+                                                    onblur="guardarNota(this)">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-with-icon">
+                                                <input type="number" min="0" max="10" step="0.1" 
+                                                    name="notas[<?php echo $alumno['id_alumno']; ?>][parcial2]" 
+                                                    value="<?php echo !empty($notas['parcial2']) ? htmlspecialchars($notas['parcial2']) : ''; ?>" 
+                                                    class="grade-input" 
+                                                    onchange="calcularPromedio(this)"
+                                                    onblur="guardarNota(this)">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-with-icon">
+                                                <input type="number" min="0" max="10" step="0.1" 
+                                                    name="notas[<?php echo $alumno['id_alumno']; ?>][final]" 
+                                                    value="<?php echo !empty($notas['final']) ? htmlspecialchars($notas['final']) : ''; ?>" 
+                                                    class="grade-input final-grade"
+                                                    onblur="guardarNota(this)">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="grade-badge promedio <?php echo getGradeClass($promedio); ?>">
+                                                <?php echo $promedio ?: '-'; ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class='bx bx-save'></i> Guardar Calificaciones
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class='bx bx-reset'></i> Restablecer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     <?php elseif (isset($id_materia) && empty($alumnos)): ?>
-        <p>No hay alumnos registrados para esta materia.</p>
-<?php endif; ?>
-
+        <div class="empty-state">
+            <i class='bx bx-user-x'></i>
+            <h3>No hay alumnos registrados</h3>
+            <p>No hay estudiantes inscriptos en esta materia actualmente.</p>
+            <a href="../../menu/ingresar/listado_alumnos.php" class="btn btn-primary">
+                <i class='bx bx-plus'></i> Agregar Alumnos
+            </a>
+        </div>
+    <?php endif; ?>
+    
+    <script>
+        // Inicializar tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar tooltips
+            if (window.tippy) {
+                tippy('[data-tippy-content]');
+            }
+            
+            // Agregar animación a las filas de estudiantes
+            const rows = document.querySelectorAll('.student-row');
+            rows.forEach((row, index) => {
+                row.style.animationDelay = `${index * 0.05}s`;
+            });
+            
+            // Manejar el envío del formulario
+            const form = document.getElementById('form-calificaciones');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Mostrar indicador de carga
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Guardando...';
+                    
+                    // Simular envío (reemplazar con AJAX en producción)
+                    setTimeout(() => {
+                        this.submit();
+                    }, 1000);
+                });
+            }
+        });
         
-    </div>
+        // Función para calcular el promedio automáticamente
+        function calcularPromedio(input) {
+            const row = input.closest('tr');
+            const parcial1 = parseFloat(row.querySelector('input[name$="[parcial1]"]').value) || 0;
+            const parcial2 = parseFloat(row.querySelector('input[name$="[parcial2]"]').value) || 0;
+            
+            if (parcial1 > 0 && parcial2 > 0) {
+                const promedio = (parcial1 + parcial2) / 2;
+                const promedioCell = row.querySelector('.grade-badge');
+                if (promedioCell) {
+                    promedioCell.textContent = promedio.toFixed(1);
+                    // Actualizar clase según la nota
+                    promedioCell.className = 'grade-badge ' + getGradeClass(promedio);
+                }
+            }
+        }
+        
+        // Función para obtener la clase CSS según la calificación
+        function getGradeClass(grade) {
+            if (!grade) return '';
+            
+            if (grade >= 9) return 'grade-a';
+            if (grade >= 7) return 'grade-b';
+            if (grade >= 5) return 'grade-c';
+            if (grade >= 4) return 'grade-d';
+            return 'grade-f';
+        }
+    </script>
+    
+    <?php
+    // Función auxiliar para PHP
+    function getGradeClass($grade) {
+        if (empty($grade)) return '';
+        
+        if ($grade >= 9) return 'grade-a';
+        if ($grade >= 7) return 'grade-b';
+        if ($grade >= 5) return 'grade-c';
+        if ($grade >= 4) return 'grade-d';
+        return 'grade-f';
+    }
+    ?>
+    
+    <!-- Sonner para notificaciones -->
+    <script src="https://cdn.jsdelivr.net/npm/sonner"></script>
+    <script>
+        // Mostrar notificación de éxito si hay un mensaje en la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('success')) {
+            window.Sonner.success('¡Calificaciones guardadas correctamente!', {
+                position: 'top-right',
+                duration: 3000
+            });
+            // Limpiar el parámetro de la URL sin recargar la página
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+        }
+    </script>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/sonner@latest/dist/sonner.umd.js"></script>
 <script src="../../resources/menu/sidebar.js"></script>
 <script src="../../resources/menu/asistencia_fecha.js"></script>
+<script src="../../resources/menu/calificaciones.js"></script>
 
 
 </html>

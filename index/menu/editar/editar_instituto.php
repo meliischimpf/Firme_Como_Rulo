@@ -2,7 +2,7 @@
 
 if (isset($_GET['id_instituto'])) {
 
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/Firme_Como_Rulo/index/clases/Instituto.php';
+    require_once __DIR__ . '../../../clases/Instituto.php';
     $instituto = Instituto::crearInstitutoDesdeID($_GET['id_instituto']);
 }
 ?>

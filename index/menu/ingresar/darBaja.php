@@ -1,6 +1,6 @@
 <?php
-            require_once $_SERVER['DOCUMENT_ROOT'] . '/Firme_Como_Rulo/index/conexion.php';
-            require_once $_SERVER['DOCUMENT_ROOT'] . '/Firme_Como_Rulo/index/clases/Alumno.php';
+            require_once __DIR__ . '../../../conexion.php';
+            require_once __DIR__ . '../../../clases/Alumno.php';
     
             $db = new Database();
             $conn = $db->connect();

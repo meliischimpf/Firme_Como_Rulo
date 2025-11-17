@@ -1,32 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="es" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <title>Firme como Rulo</title>
-    <style>
-        .labelcheck {
-            display: none; 
-        }
-
-        .labelcheck + label {
-            font-size: 30px; 
-            color: gray; 
-            cursor: pointer; 
-            display: inline-block; 
-        }
-
-        .labelcheck:checked + label {
-            color: gold; 
-        }
-
-        .labelcheck + label::before {
-            content: '★'; 
-            font-size: 30px;
-        }
-    </style>
+    <title>Rewards - Firme como Rulo</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sonner@latest/dist/sonner.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="../../resources/menu/sidebar.css">
     <link rel="stylesheet" href="../../resources/menu/menu.css">
+    <link rel="stylesheet" href="../../resources/menu/forms.css">
+    <link rel="stylesheet" href="../../resources/menu/rewards.css">
     <link rel="icon" href="../../resources/img/favicon.ico" type="image/x-icon">
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -103,11 +85,15 @@
     </div>
 
      <div class="main-container">
-      <h2>Rewards</h2>
-    <div class="anadir">
-        <a href="../registros/registrar_alumno.php"><button value="anadir alumno"> + Alumno</button></a>
-    </div>
-    <?php
+      <div class="header-actions">
+        <h2><i class='bx bx-star'></i> Sistema de Recompensas</h2>
+        <div class="action-buttons">
+          <a href="../registros/registrar_alumno.php" class="btn btn-primary">
+            <i class='bx bx-plus'></i> Nuevo Alumno
+          </a>
+        </div>
+      </div>
+      <?php
         require_once __DIR__ . '/../../conexion.php';
         require_once __DIR__ . '/../../clases/Alumno.php';
         require_once __DIR__ . '/../../clases/Materia.php';
@@ -135,64 +121,204 @@
         }
         ?>
 
-        <form method="post" action="">
-            <label for="id_instituto">Seleccionar Instituto:</label>
-            <select name="id_instituto" id="id_instituto" required onchange="this.form.submit()">
-                <option value="">Seleccionar Instituto</option>
-                <?php
-                if (!empty($result_institutos)) {
-                    foreach ($result_institutos as $row_instituto) {
-                        $selected = (isset($id_instituto) && $id_instituto == $row_instituto["id_instituto"]) ? 'selected' : '';
-                        echo "<option value='" . $row_instituto["id_instituto"] . "' $selected>" . $row_instituto["nombre_instituto"] . "</option>";
-                    }
-                } else {
-                    echo "<option value=''>No hay institutos disponibles</option>";
-                }
-                ?>
-            </select>
+        <div class="card">
+            <form method="post" action="" class="filter-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_instituto" class="form-label">Instituto</label>
+                        <div class="select-wrapper">
+                            <select name="id_instituto" id="id_instituto" class="form-select" required onchange="this.form.submit()">
+                                <option value="">Seleccionar Instituto</option>
+                                <?php
+                                if (!empty($result_institutos)) {
+                                    foreach ($result_institutos as $row_instituto) {
+                                        $selected = (isset($id_instituto) && $id_instituto == $row_instituto["id_instituto"]) ? 'selected' : '';
+                                        echo "<option value='" . htmlspecialchars($row_instituto["id_instituto"]) . "' $selected>" . 
+                                             htmlspecialchars($row_instituto["nombre_instituto"]) . "</option>";
+                                    }
+                                } else {
+                                    echo "<option value=''>No hay institutos disponibles</option>";
+                                }
+                                ?>
+                            </select>
+                            <i class='bx bx-chevron-down'></i>
+                        </div>
+                    </div>
 
-            <?php if (!empty($materias)): ?>
-                <label for="id_materia">Seleccionar Materia:</label>
-                <select name="id_materia" id="id_materia" onchange="this.form.submit()">
-                    <option value="">Seleccionar Materia</option>
-                    <?php
-                    foreach ($materias as $materia) {
-                        $selected = (isset($id_materia) && $id_materia == $materia["id_materia"]) ? 'selected' : '';
-                        echo "<option value='" . $materia['id_materia'] . "' $selected>" . $materia['nombre_materia'] . "</option>";
-                    }
-                    ?>
-                </select>
-                <input type="hidden" name="id_instituto" value="<?php echo isset($id_instituto) ? $id_instituto : ''; ?>">
-            <?php endif; ?>
+                    <?php if (!empty($materias)): ?>
+                    <div class="form-group">
+                        <label for="id_materia" class="form-label">Materia</label>
+                        <div class="select-wrapper">
+                            <select name="id_materia" id="id_materia" class="form-select" onchange="this.form.submit()">
+                                <option value="">Seleccionar Materia</option>
+                                <?php
+                                foreach ($materias as $materia) {
+                                    $selected = (isset($id_materia) && $id_materia == $materia["id_materia"]) ? 'selected' : '';
+                                    echo "<option value='" . htmlspecialchars($materia['id_materia']) . "' $selected>" . 
+                                         htmlspecialchars($materia['nombre_materia']) . "</option>";
+                                }
+                                ?>
+                            </select>
+                            <i class='bx bx-chevron-down'></i>
+                            <input type="hidden" name="id_instituto" value="<?php echo isset($id_instituto) ? htmlspecialchars($id_instituto) : ''; ?>">
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </form>
 
-            <?php if (isset($id_materia) && !empty($alumnos)): ?>
-                <h4>Alumnos Inscriptos</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Apellido y Nombre</th>
-                            <th>Rewards</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($alumnos as $index => $alumno): ?>
-                            <tr>
-                                <td><?php echo $alumno['apellido_alumno'] . ", " . $alumno['nombre_alumno']; ?></td>
-                                <td>
-                                    <input type="checkbox" class="labelcheck" id="reward<?php echo $index; ?>" />
-                                    <label for="reward<?php echo $index; ?>"></label>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php elseif (isset($id_materia)): ?>
-                <p>No hay alumnos registrados para esta materia.</p>
+            <?php if (isset($id_materia)): ?>
+                <div class="table-responsive">
+                    <?php if (!empty($alumnos)): ?>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Alumno</th>
+                                    <th>Puntos</th>
+                                    <th>Nivel</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($alumnos as $index => $alumno): 
+                                    // Datos simulados para el ejemplo
+                                    $puntos = rand(0, 100);
+                                    $nivel = floor($puntos / 20) + 1;
+                                    $estrellas = rand(1, 5);
+                                ?>
+                                    <tr class="alumno-row" data-alumno-id="<?php echo htmlspecialchars($alumno['id_alumno']); ?>">
+                                        <td class="alumno-info">
+                                            <div class="alumno-avatar">
+                                                <?php echo strtoupper(substr($alumno['nombre_alumno'], 0, 1) . substr($alumno['apellido_alumno'], 0, 1)); ?>
+                                            </div>
+                                            <div>
+                                                <div class="alumno-nombre"><?php echo htmlspecialchars($alumno['apellido_alumno'] . ", " . $alumno['nombre_alumno']); ?></div>
+                                                <div class="alumno-email"><?php echo htmlspecialchars($alumno['email_alumno'] ?? 'sin-email@ejemplo.com'); ?></div>
+                                            </div>
+                                        </td>
+                                        <td class="puntos">
+                                            <div class="progress-container">
+                                                <div class="progress-bar" style="width: <?php echo min(100, $puntos); ?>%;">
+                                                    <span><?php echo $puntos; ?> pts</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="nivel">
+                                            <span class="badge nivel-<?php echo min(5, $nivel); ?>">
+                                                Nivel <?php echo min(5, $nivel); ?>
+                                            </span>
+                                        </td>
+                                        <td class="acciones">
+                                            <div class="rating" data-alumno-id="<?php echo htmlspecialchars($alumno['id_alumno']); ?>">
+                                                <?php for ($i = 5; $i >= 1; $i--): ?>
+                                                    <input type="radio" id="star<?php echo $i . '_' . $index; ?>" name="rating_<?php echo $index; ?>" value="<?php echo $i; ?>" 
+                                                        <?php echo $i == $estrellas ? 'checked' : ''; ?> />
+                                                    <label for="star<?php echo $i . '_' . $index; ?>">
+                                                        <i class='bx bxs-star'></i>
+                                                    </label>
+                                                <?php endfor; ?>
+                                            </div>
+                                            <button class="btn-icon" title="Ver historial">
+                                                <i class='bx bx-history'></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php else: ?>
+                        <div class="empty-state">
+                            <i class='bx bx-user-x'></i>
+                            <h3>No hay alumnos registrados</h3>
+                            <p>No se encontraron alumnos para la materia seleccionada.</p>
+                            <a href="../registros/registrar_alumno.php" class="btn btn-primary">
+                                <i class='bx bx-plus'></i> Agregar Alumno
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php else: ?>
+                <div class="empty-state">
+                    <i class='bx bx-select-multiple'></i>
+                    <h3>Selecciona un instituto y una materia</h3>
+                    <p>Para comenzar a gestionar las recompensas, por favor selecciona un instituto y una materia de las listas desplegables.</p>
+                </div>
             <?php endif; ?>
-        </form>
-    </form>
+        </div>
+    </div>
 </div>
-</body>
 <script src="https://cdn.jsdelivr.net/npm/sonner@latest/dist/sonner.umd.js"></script>
 <script src="../../resources/menu/sidebar.js"></script>
+<script>
+    // Inicializar Sonner para notificaciones
+    const toast = window.sonner;
+    
+    // Función para manejar el cambio de calificación
+    document.querySelectorAll('.rating').forEach(ratingContainer => {
+        const stars = ratingContainer.querySelectorAll('input[type="radio"]');
+        const alumnoId = ratingContainer.dataset.alumnoId;
+        
+        stars.forEach(star => {
+            star.addEventListener('change', function() {
+                const value = this.value;
+                const alumnoRow = this.closest('.alumno-row');
+                
+                // Simular envío al servidor
+                alumnoRow.classList.add('saving');
+                
+                // Aquí iría la llamada AJAX real
+                setTimeout(() => {
+                    alumnoRow.classList.remove('saving');
+                    toast.success('¡Calificación guardada!', {
+                        description: `Se actualizó la calificación a ${value} estrellas`,
+                        position: 'top-right'
+                    });
+                    
+                    // Animación de confirmación
+                    const starIcon = this.nextElementSibling.querySelector('i');
+                    starIcon.style.transform = 'scale(1.3)';
+                    setTimeout(() => {
+                        starIcon.style.transform = 'scale(1)';
+                    }, 300);
+                    
+                }, 800);
+            });
+        });
+    });
+    
+    // Efecto hover en las filas
+    document.querySelectorAll('.alumno-row').forEach(row => {
+        row.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateX(5px)';
+        });
+        
+        row.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateX(0)';
+        });
+    });
+    
+    // Manejo del clic en el botón de historial
+    document.querySelectorAll('.btn-icon').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const alumnoId = this.closest('.alumno-row').dataset.alumnoId;
+            toast.info('Historial de recompensas', {
+                description: 'Aquí se mostraría el historial de recompensas del alumno',
+                position: 'top-right'
+            });
+        });
+    });
+    
+    // Inicializar tooltips
+    if (typeof tippy !== 'undefined') {
+        tippy('[title]', {
+            content: (reference) => reference.getAttribute('title'),
+            theme: 'light',
+            animation: 'shift-away',
+            delay: [100, 0],
+            duration: [200, 150]
+        });
+    }
+</script>
+</body>
 </html>

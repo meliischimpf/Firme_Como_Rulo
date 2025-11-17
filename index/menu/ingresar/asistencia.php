@@ -1,14 +1,84 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="es" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <title>Firme como Rulo</title>
+    <title>Asistencia - Firme como Rulo</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sonner@latest/dist/sonner.css" />
     <link rel="stylesheet" href="../../resources/menu/sidebar.css">
     <link rel="stylesheet" href="../../resources/menu/menu.css">
+    <link rel="stylesheet" href="../../resources/menu/forms.css">
+    <link rel="stylesheet" href="../../resources/menu/asistencia.css">
     <link rel="icon" href="../../resources/img/favicon.ico" type="image/x-icon">
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .header-actions h2 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+        
+        .form-filters {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 0;
+        }
+        
+        .students-table {
+            margin-top: 1.5rem;
+        }
+        
+        .no-students {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2);
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -82,9 +152,11 @@
     </div>
 
      <div class="main-container">
-      <h2>Asistencia</h2>
-    <div class="anadir">
-        <a href="../registros/registrar_alumno.php"><button value="anadir alumno"> + Alumno</button></a>
+    <div class="header-actions">
+        <h2>📋 Control de Asistencia</h2>
+        <a href="../registros/registrar_alumno.php" class="btn-primary">
+            <i class='bx bx-plus'></i> Nuevo Alumno
+        </a>
     </div>
     <?php
         require_once __DIR__ . '/../../conexion.php';
@@ -127,26 +199,30 @@
         }
         ?>
 
-        <form method="post" action="">
-            <label for="id_instituto">Seleccionar Instituto:</label>
-            <select name="id_instituto" id="id_instituto" required onchange="this.form.submit()">
-                <option value="">Seleccionar Instituto</option>
-                <?php
-                if (!empty($result_institutos)) {
-                    foreach ($result_institutos as $row_instituto) {
-                        $selected = (isset($id_instituto) && $id_instituto == $row_instituto["id_instituto"]) ? 'selected' : '';
-                        echo "<option value='" . $row_instituto["id_instituto"] . "' $selected>" . $row_instituto["nombre_instituto"] . "</option>";
-                    }
-                } else {
-                    echo "<option value=''>No hay institutos disponibles</option>";
-                }
-                ?>
-            </select>
+        <form method="post" action="" class="form-filters">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_instituto">Instituto</label>
+                    <select name="id_instituto" id="id_instituto" required onchange="this.form.submit()" class="select-custom">
+                        <option value="">Seleccionar Instituto</option>
+                        <?php
+                        if (!empty($result_institutos)) {
+                            foreach ($result_institutos as $row_instituto) {
+                                $selected = (isset($id_instituto) && $id_instituto == $row_instituto["id_instituto"]) ? 'selected' : '';
+                                echo "<option value='" . $row_instituto["id_instituto"] . "' $selected>" . htmlspecialchars($row_instituto["nombre_instituto"]) . "</option>";
+                            }
+                        } else {
+                            echo "<option value=''>No hay institutos disponibles</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
 
-            <?php if (!empty($materias)): ?>
-                <label for="id_materia">Seleccionar Materia:</label>
-                <select name="id_materia" id="id_materia" onchange="this.form.submit()">
-                    <option value="">Seleccionar Materia</option>
+                <?php if (!empty($materias)): ?>
+                    <div class="form-group">
+                        <label for="id_materia">Materia</label>
+                        <select name="id_materia" id="id_materia" onchange="this.form.submit()" class="select-custom">
+                            <option value="">Seleccionar Materia</option>
                     <?php
                     foreach ($materias as $materia) {
                         $selected = (isset($id_materia) && $id_materia == $materia["id_materia"]) ? 'selected' : '';
@@ -155,65 +231,188 @@
                     ?>
                 </select>
                 <input type="hidden" name="id_instituto" value="<?php echo isset($id_instituto) ? $id_instituto : ''; ?>">
+                </div>
             <?php endif; ?>
-            <br>
 
             <?php if (isset($id_materia) && !empty($alumnos)): ?>
-                <label for="fecha_asistencia">Seleccionar Fecha de Asistencia: </label>
-                <input type="date" name="fecha_asistencia" id="fecha_asistencia" value="<?php echo htmlspecialchars($fecha_asistencia); ?>" onchange="this.form.submit()">
-                <h4>Alumnos Inscriptos</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Apellido y Nombre</th>
-                            <th>Presente</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($alumnos as $alumno): ?>
-                        <tr>
-                            <td><?php echo $alumno['apellido_alumno'] . ", " . $alumno['nombre_alumno']; ?></td>
+                <div class="form-group">
+                    <label for="fecha_asistencia">Fecha de Asistencia</label>
+                    <div class="date-picker">
+                        <input type="date" name="fecha_asistencia" id="fecha_asistencia" 
+                               value="<?php echo htmlspecialchars($fecha_asistencia); ?>" 
+                               onchange="this.form.submit()"
+                               class="date-input">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card students-table">
+                <div class="card-header">
+                    <h3 class="card-title">📋 Lista de Alumnos</h3>
+                    <span class="badge"><?php echo count($alumnos); ?> alumnos</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="students-list">
+                        <thead>
+                            <tr>
+                                <th>Alumno</th>
+                                <th>Asistencia</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    <?php foreach ($alumnos as $alumno): 
+                        $isPresent = in_array($alumno['id_alumno'], $id_alumno_asistencia);
+                        $isBirthday = in_array($alumno['id_alumno'], $idCumpleanieros);
+                    ?>
+                        <tr class="student-row <?php echo $isPresent ? 'present' : ''; ?>" 
+                            <?php echo $isBirthday ? 'data-cumpleaniero="true"' : ''; ?>>
                             <td>
-                                <input type="checkbox" name="asistencia[<?php echo $alumno['id_alumno']; ?>]" value="1"
-                                    onchange="registrarAsistencia(<?php echo $alumno['id_alumno']; ?>, <?php echo $id_materia; ?>, this.checked)"
-                                    <?php echo in_array($alumno['id_alumno'], $id_alumno_asistencia) ? 'checked' : ''; ?>
-                                    <?php echo in_array($alumno['id_alumno'], $idCumpleanieros) ? 'data-cumpleaniero="true"' : ''; ?>>
+                                <div class="student-info">
+                                    <span class="student-name">
+                                        <?php echo $alumno['apellido_alumno'] . ", " . $alumno['nombre_alumno']; ?>
+                                    </span>
+                                    <?php if ($isBirthday): ?>
+                                        <span class="birthday-badge">🎂 ¡Cumpleaños!</span>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" 
+                                           name="asistencia[<?php echo $alumno['id_alumno']; ?>]" 
+                                           value="1"
+                                           onchange="registrarAsistencia(<?php echo $alumno['id_alumno']; ?>, <?php echo $id_materia; ?>, this.checked)"
+                                           <?php echo $isPresent ? 'checked' : ''; ?>>
+                                    <span class="checkmark"></span>
+                                    <span class="status-text"><?php echo in_array($alumno['id_alumno'], $id_alumno_asistencia) ? 'Ausente' : 'Presente'; ?> </span>
+                                </label>
                             </td>
                         </tr>
                     <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             <?php elseif (isset($id_materia)): ?>
-                <p>No hay alumnos registrados para esta materia.</p>
+                <div class="no-students">
+                    <i class='bx bx-user-x' style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                    <p>No hay alumnos registrados para esta materia.</p>
+                    <a href="../registros/registrar_alumno.php" class="btn-primary" style="margin-top: 1rem;">
+                        <i class='bx bx-plus'></i> Agregar Alumno
+                    </a>
+                </div>
             <?php endif; ?>
         </form>
-</form>
 
     </div>
 </body>
 <script>
-
+    // Initialize toast notifications
+    const toast = window.Sonner || {};
+    
     document.addEventListener('DOMContentLoaded', function() {
         actualizarCumpleanieros();
+        
+        // Add animation to student rows
+        const rows = document.querySelectorAll('.student-row');
+        rows.forEach((row, index) => {
+            row.style.animationDelay = `${index * 0.05}s`;
+        });
+        
+        // Initialize tooltips
+        if (window.tippy) {
+            tippy('[data-tippy-content]');
+        }
     });
 
-    document.getElementById('fecha_asistencia').addEventListener('change', function() {
-        actualizarCumpleanieros();
-    });
+    // Update birthday highlights when date changes
+    const fechaInput = document.getElementById('fecha_asistencia');
+    if (fechaInput) {
+        fechaInput.addEventListener('change', actualizarCumpleanieros);
+    }
 
+    // Function to update birthday highlights
     function actualizarCumpleanieros() {
-        // eliminar el color de todos los checkboxes
-        document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
-            checkbox.parentElement.style.backgroundColor = ''; 
+        // Reset all highlights
+        document.querySelectorAll('.student-row').forEach(row => {
+            row.classList.remove('birthday-highlight');
         });
 
-        // aplicar color a los checkboxes que tengan `data-cumpleaniero="true"`
-        document.querySelectorAll('input[type="checkbox"][data-cumpleaniero="true"]').forEach(function(checkbox) {
-            checkbox.parentElement.style.backgroundColor = '#ffeb3b';  
+        // Highlight birthday students
+        document.querySelectorAll('[data-cumpleaniero="true"]').forEach(row => {
+            row.classList.add('birthday-highlight');
+            
+            // Add confetti effect for birthday
+            if (row.querySelector('input[type="checkbox"]')?.checked) {
+                triggerConfetti(row);
+            }
         });
     }
 
-
+    // Register attendance with AJAX
+    function registrarAsistencia(idAlumno, idMateria, presente) {
+        const fecha = document.getElementById('fecha_asistencia').value;
+        const statusText = document.querySelector(`input[name="asistencia[${idAlumno}]"]`).nextElementSibling.nextElementSibling;
+        
+        // Show loading state
+        statusText.textContent = 'Guardando...';
+        
+        fetch('../../acciones/registrar_asistencia.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `id_alumno=${idAlumno}&id_materia=${idMateria}&fecha=${fecha}&presente=${presente ? 1 : 0}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                statusText.textContent = presente ? 'Presente' : 'Ausente';
+                const row = document.querySelector(`input[name="asistencia[${idAlumno}]"]`).closest('tr');
+                
+                if (presente) {
+                    row.classList.add('present');
+                    toast.success('Asistencia registrada correctamente');
+                    
+                    // Show confetti if it's their birthday
+                    if (row.hasAttribute('data-cumpleaniero')) {
+                        triggerConfetti(row);
+                    }
+                } else {
+                    row.classList.remove('present');
+                    toast.info('Asistencia actualizada');
+                }
+            } else {
+                throw new Error(data.message || 'Error al registrar la asistencia');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            toast.error('Error al guardar los cambios');
+            // Revert the checkbox state on error
+            const checkbox = document.querySelector(`input[name="asistencia[${idAlumno}]"]`);
+            if (checkbox) {
+                checkbox.checked = !presente;
+                statusText.textContent = presente ? 'Ausente' : 'Presente';
+            }
+        });
+    }
+    
+    // Confetti effect for birthdays
+    function triggerConfetti(element) {
+        if (window.confetti) {
+            const rect = element.getBoundingClientRect();
+            const x = (rect.left + rect.width / 2) / window.innerWidth;
+            const y = (rect.top + rect.height / 2) / window.innerHeight;
+            
+            confetti({
+                particleCount: 50,
+                spread: 70,
+                origin: { x, y },
+                colors: ['#ff0', '#f0f', '#0ff', '#f80', '#8f0']
+            });
+        }
+    }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sonner@latest/dist/sonner.umd.js"></script>
 <script src="../../resources/menu/sidebar.js"></script>

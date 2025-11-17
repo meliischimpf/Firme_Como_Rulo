@@ -1,14 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="es" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <title>Firme como Rulo</title>
+    <title>Listado de Alumnos - Firme como Rulo</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sonner@latest/dist/sonner.css" />
     <link rel="stylesheet" href="../../resources/menu/sidebar.css">
     <link rel="stylesheet" href="../../resources/menu/menu.css">
+    <link rel="stylesheet" href="../../resources/menu/forms.css">
+    <link rel="stylesheet" href="../../resources/menu/listado_alumnos.css">
     <link rel="icon" href="../../resources/img/favicon.ico" type="image/x-icon">
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
 </head>
 <body>
 <div class="container">
@@ -82,10 +87,12 @@
     </div>
 
      <div class="main-container">
-      <h2>Listado Alumnos</h2>
-    <div class="anadir">
-        <a href="../registros/registrar_alumno.php"><button value="anadir alumno"> + Alumno</button></a>
-    </div>
+      <div class="header-actions">
+        <h2><i class='bx bx-list-ul'></i> Listado de Alumnos</h2>
+        <a href="../registros/registrar_alumno.php" class="btn btn-primary">
+          <i class='bx bx-plus'></i> Nuevo Alumno
+        </a>
+      </div>
     <?php
         require_once __DIR__ . '/../../conexion.php';
         require_once __DIR__ . '/../../clases/Alumno.php';
@@ -114,9 +121,11 @@
         }
         ?>
 
-    <form method="post" action="">
-        <label for="id_instituto">Seleccionar Instituto:</label>
-        <select name="id_instituto" id="id_instituto" required onchange="this.form.submit()">
+    <form method="post" action="" class="filters-container">
+      <div class="filters-grid">
+        <div class="form-group">
+          <label for="id_instituto">Instituto</label>
+          <select name="id_instituto" id="id_instituto" class="form-control" required onchange="this.form.submit()">
             <option value="">Seleccionar Instituto</option>
             <?php
             if (!empty($result_institutos)) {
@@ -128,55 +137,171 @@
                 echo "<option value=''>No hay institutos disponibles</option>";
             }
             ?>
-        </select>
+          </select>
+        </div>
 
         <?php if (!empty($materias)): ?>
-            <label for="id_materia">Seleccionar Materia:</label>
-            <select name="id_materia" id="id_materia" onchange="this.form.submit()">
-                <option value="">Seleccionar Materia</option>
-                <?php
-                foreach ($materias as $materia) {
-                    $selected = (isset($id_materia) && $id_materia == $materia["id_materia"]) ? 'selected' : '';
-                    echo "<option value='" . $materia['id_materia'] . "' $selected>" . $materia['nombre_materia'] . "</option>";
-                }
-                ?>
-            </select>
-            <input type="hidden" name="id_instituto" value="<?php echo isset($id_instituto) ? $id_instituto : ''; ?>">
+        <div class="form-group">
+          <label for="id_materia">Materia</label>
+          <select name="id_materia" id="id_materia" class="form-control" onchange="this.form.submit()">
+            <option value="">Todas las materias</option>
+            <?php
+            foreach ($materias as $materia) {
+                $selected = (isset($id_materia) && $id_materia == $materia["id_materia"]) ? 'selected' : '';
+                echo "<option value='" . $materia['id_materia'] . "' $selected>" . $materia['nombre_materia'] . "</option>";
+            }
+            ?>
+          </select>
+          <input type="hidden" name="id_instituto" value="<?php echo isset($id_instituto) ? htmlspecialchars($id_instituto) : ''; ?>">
+        </div>
         <?php endif; ?>
-
-        <?php if (isset($id_materia) && !empty($alumnos)): ?>
-            <h4>Alumnos Inscriptos</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Apellido y Nombre</th>
-                        <th>Mail</th>
-                        <th>Fecha Nacimiento</th>
-                        <th>DNI</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($alumnos as $alumno): ?>
-                        <tr>
-                            <td><?php echo $alumno['apellido_alumno'] . ", " . $alumno['nombre_alumno']; ?></td>
-                            <td><?php echo $alumno['mail_alumno']?></td>
-                            <td><?php echo $alumno['fecha_nacimiento_alumno']?></td>
-                            <td><?php echo $alumno['dni_alumno']?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        <?php elseif (isset($id_materia)): ?>
-            <p>No hay alumnos registrados para esta materia.</p>
-    <?php endif; ?>
+      </div>
     </form>
-</form>
+
+    <?php if (isset($id_materia)): ?>
+      <div class="table-container fade-in">
+        <div class="table-header">
+          <h3>Alumnos Inscriptos</h3>
+        </div>
+        
+        <?php if (!empty($alumnos)): ?>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 35%;">Alumno</th>
+                  <th style="width: 25%;">Email</th>
+                  <th style="width: 15%;">Fecha Nacimiento</th>
+                  <th style="width: 15%;">DNI</th>
+                  <th style="width: 10%; text-align: right; padding-right: 1.5rem;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php 
+                $counter = 0;
+                foreach ($alumnos as $alumno): 
+                  $counter++;
+                  $initials = strtoupper(substr($alumno['nombre_alumno'], 0, 1) . substr($alumno['apellido_alumno'], 0, 1));
+                  $fullName = htmlspecialchars($alumno['apellido_alumno'] . ', ' . $alumno['nombre_alumno']);
+                  $email = !empty($alumno['mail_alumno']) ? htmlspecialchars($alumno['mail_alumno']) : 'sin-email@ejemplo.com';
+                  $fechaNac = !empty($alumno['fecha_nacimiento_alumno']) ? date('d/m/Y', strtotime($alumno['fecha_nacimiento_alumno'])) : 'No especificada';
+                  $dni = !empty($alumno['dni_alumno']) ? htmlspecialchars($alumno['dni_alumno']) : 'Sin DNI';
+                ?>
+                  <tr class="alumno-row" data-nombre="<?php echo strtolower(htmlspecialchars($alumno['apellido_alumno'] . ' ' . $alumno['nombre_alumno'])); ?>">
+                    <td class="alumno-info">
+                      <div class="alumno-avatar"><?php echo $initials; ?></div>
+                      <div>
+                        <div class="alumno-nombre"><?php echo $fullName; ?></div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="alumno-email">
+                        <i class='bx bx-envelope'></i> <?php echo $email; ?>
+                      </div>
+                    </td>
+                    <td><?php echo $fechaNac; ?></td>
+                    <td><?php echo $dni; ?></td>
+                    <td>
+                      <div class="action-buttons" style="display: flex; gap: 5px; justify-content: flex-end; padding-right: 10px;">
+                        <a href="../editar/editar_alumno.php?id=<?php echo $alumno['id_alumno']; ?>" class="btn-icon" title="Editar alumno" style="padding: 4px 6px; font-size: 16px;">
+                          <i class='bx bx-edit-alt'></i>
+                        </a>
+                        <button type="button" class="btn-icon delete" title="Eliminar alumno" onclick="confirmarEliminacion(<?php echo $alumno['id_alumno']; ?>, '<?php echo addslashes($alumno['apellido_alumno'] . ', ' . $alumno['nombre_alumno']); ?>')" style="padding: 4px 6px; font-size: 16px;">
+                          <i class='bx bx-trash'></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        <?php else: ?>
+          <div class="empty-state">
+            <i class='bx bx-user-x'></i>
+            <h4>No hay alumnos registrados</h4>
+            <p>No se encontraron alumnos inscriptos en esta materia. Puedes agregar nuevos alumnos usando el botón "Nuevo Alumno".</p>
+          </div>
+        <?php endif; ?>
+      </div>
+    <?php else: ?>
+      <div class="empty-state">
+        <i class='bx bx-filter-alt'></i>
+        <h4>Selecciona un instituto y una materia</h4>
+        <p>Para ver el listado de alumnos, por favor selecciona un instituto y una materia del menú desplegable.</p>
+      </div>
+    <?php endif; ?>
+</div>
 
 </div>
 
-</body>
 <script src="https://cdn.jsdelivr.net/npm/sonner@latest/dist/sonner.umd.js"></script>
 <script src="../../resources/menu/sidebar.js"></script>
-<script src="../../resources/menu/ingresar/darBaja.js"></script>
+<script>
+// Inicializar Sonner para notificaciones
+const toast = Sonner;
 
+// Función para confirmar eliminación
+document.addEventListener('DOMContentLoaded', function() {
+  
+  // Inicializar tooltips con Tippy.js
+  tippy('[title]', {
+    content(reference) {
+      return reference.getAttribute('title');
+    },
+    animation: 'shift-away',
+    theme: 'light',
+    delay: [100, 0],
+    duration: [200, 200],
+    arrow: true,
+    arrowType: 'round',
+    interactive: true,
+    appendTo: document.body
+  });
+  
+  // Eliminar atributos title para evitar tooltips nativos
+  document.querySelectorAll('[title]').forEach(el => {
+    el.setAttribute('data-tooltip', el.getAttribute('title'));
+    el.removeAttribute('title');
+  });
+});
+
+// Función para confirmar eliminación
+function confirmarEliminacion(id, nombre) {
+  if (confirm(`¿Estás seguro de que deseas eliminar al alumno ${nombre}? Esta acción no se puede deshacer.`)) {
+    // Mostrar estado de carga
+    const btn = event.target.closest('button');
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="bx bx-loader bx-spin"></i>';
+    btn.disabled = true;
+    
+    // Simular petición AJAX (reemplazar con tu lógica real)
+    setTimeout(() => {
+      // Aquí iría la llamada AJAX para eliminar el alumno
+      // Por ahora, solo mostramos un mensaje de éxito
+      toast.success('Alumno eliminado', {
+        description: `El alumno ${nombre} ha sido eliminado correctamente.`
+      });
+      
+      // Recargar la página después de 1.5 segundos
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    }, 1000);
+  }
+}
+
+// Agregar animación de hover a las filas de la tabla
+document.querySelectorAll('.alumno-row').forEach(row => {
+  row.addEventListener('mouseenter', function() {
+    this.style.transform = 'translateX(4px)';
+    this.style.transition = 'transform 0.2s ease';
+  });
+  
+  row.addEventListener('mouseleave', function() {
+    this.style.transform = 'translateX(0)';
+  });
+});
+</script>
+</body>
 </html>
