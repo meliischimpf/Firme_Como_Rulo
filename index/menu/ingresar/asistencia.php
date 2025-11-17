@@ -192,9 +192,11 @@
             $alumnos = $materia->obtenerAlumnosPorMateria($id_materia);
         }
 
-        // asistencia para una fecha seleccionada
-        if (isset($_POST['fecha_asistencia']) && !empty($_POST['fecha_asistencia']) && isset($id_materia)) {
-            $fecha_asistencia = $_POST['fecha_asistencia']; 
+        // Obtener la fecha de asistencia del POST o usar la fecha actual
+        $fecha_asistencia = $_POST['fecha_asistencia'] ?? date('Y-m-d');
+
+        // Obtener la asistencia para la fecha seleccionada
+        if (isset($id_materia) && !empty($fecha_asistencia)) {
             $id_alumno_asistencia = Alumno::obtenerAsistenciaPorFecha($id_materia, $fecha_asistencia);
         }
         ?>
@@ -281,10 +283,10 @@
                                     <input type="checkbox" 
                                            name="asistencia[<?php echo $alumno['id_alumno']; ?>]" 
                                            value="1"
-                                           onchange="registrarAsistencia(<?php echo $alumno['id_alumno']; ?>, <?php echo $id_materia; ?>, this.checked)"
+                                           onchange="registrarAsistencia(<?php echo $alumno['id_alumno']; ?>, <?php echo $id_materia; ?>, this)"
                                            <?php echo $isPresent ? 'checked' : ''; ?>>
                                     <span class="checkmark"></span>
-                                    <span class="status-text"><?php echo in_array($alumno['id_alumno'], $id_alumno_asistencia) ? 'Ausente' : 'Presente'; ?> </span>
+                                    <span class="status-text"><?php echo $isPresent ? 'Presente' : 'Ausente'; ?></span>
                                 </label>
                             </td>
                         </tr>
@@ -306,6 +308,11 @@
 
     </div>
 </body>
+<!-- Include Sonner for toast notifications -->
+<script src="https://cdn.jsdelivr.net/npm/sonner@latest/dist/sonner.umd.min.js"></script>
+<!-- Include the attendance script -->
+<script src="../../resources/menu/ingresar/asistencia_fecha.js"></script>
+
 <script>
     // Initialize toast notifications
     const toast = window.Sonner || {};
@@ -328,7 +335,14 @@
     // Update birthday highlights when date changes
     const fechaInput = document.getElementById('fecha_asistencia');
     if (fechaInput) {
-        fechaInput.addEventListener('change', actualizarCumpleanieros);
+        fechaInput.addEventListener('change', function() {
+            // The form will be submitted automatically by asistencia_fecha.js
+            // Show loading state
+            document.querySelectorAll('.status-text').forEach(el => {
+                el.textContent = 'Cargando...';
+                el.style.color = '#666';
+            });
+        });
     }
 
     // Function to update birthday highlights
