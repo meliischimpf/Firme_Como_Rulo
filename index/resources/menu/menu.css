@@ -1,3 +1,216 @@
+/* Variables */
+:root {
+  --primary-color: #00ff88;
+  --primary-dark: #00cc6a;
+  --secondary-color: #6c5ecf;
+  --danger-color: #ff3b3b;
+  --dark-bg: #1a1d23;
+  --darker-bg: #14171c;
+  --card-bg: #252a33;
+  --text-primary: #ffffff;
+  --text-secondary: #b8b8b8;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-radius: 12px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Reset y estilos base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.main-container {
+  padding: 2rem;
+  margin-left: 100px; /* Reduced from 280px to 100px to expand content area */
+  min-height: 100vh;
+  transition: var(--transition);
+  max-width: calc(100% - 120px); /* Ensure content doesn't touch the edges */
+}
+
+/* Sección de bienvenida */
+.welcome-section {
+  text-align: center;
+  margin-bottom: 3rem;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.welcome-section h2 {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.welcome-text {
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+}
+
+/* Grid del dashboard */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Tarjetas del dashboard */
+.dashboard-card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  transition: var(--transition);
+  box-shadow: var(--box-shadow);
+  border: 1px solid var(--border-color);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(0, 255, 136, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1.2rem;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+}
+
+.card-content h3 {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+}
+
+.count {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+/* Contenedor de listas */
+.lists-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.list-box {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.list-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.list-header {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+}
+
+.list-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.list-header i {
+  font-size: 1.3rem;
+}
+
+.styled-list {
+  list-style: none;
+  padding: 0.5rem 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.styled-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.styled-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.styled-list::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 3px;
+}
+
+.styled-list li {
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  transition: var(--transition);
+  border-left: 3px solid transparent;
+}
+
+.styled-list li:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-left-color: var(--primary-color);
+  padding-left: 1.8rem;
+}
+
+.styled-list li i {
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+.no-items {
+  color: var(--text-secondary) !important;
+  font-style: italic;
+  padding: 1.5rem !important;
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Estilos existentes */
 form label {
   font-size: 1em;

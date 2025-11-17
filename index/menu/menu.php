@@ -81,64 +81,98 @@
     </div>
 
      <div class="main-container">
-      <h2>Menu Principal</h2>
-
       <?php
         require_once __DIR__ . '/../conexion.php';
         require_once __DIR__ . '/../clases/Alumno.php';
         require_once __DIR__ . '/../clases/Materia.php';
         require_once __DIR__ . '/../clases/Instituto.php';
 
-        // Instanciamos la conexión
-        $db = new Database();
-        $conn = $db->connect();
-
-        // Obtener la cantidad de alumnos inscriptos
-        $alumnos = $alumno->contadorAlumnos();
-
-        // Obtener las materias
-        $materias = $materia->obtenerMaterias();
-
-        // Obtener los institutos
-        $institutos = $instituto->obtenerInstitutos();
+        // Obtener datos usando métodos estáticos
+        $alumnos = Alumno::contadorAlumnos();
+        $materias = Materia::obtenerMaterias();
+        $institutos = Instituto::obtenerInstitutos();
       ?>
 
-<h3>Bienvenido</h3>
+      <div class="welcome-section">
+        <h2>Bienvenido</h2>
+        <p class="welcome-text">Sistema de Gestión Escolar</p>
+      </div>
 
-<div class="container">
-    <div class="data-box">
-        <h3>Alumnos Inscriptos</h3>
-        <p>Cantidad: <?php echo $alumnos['total_alumnos']; ?></p>
-    </div>
-</div>
+      <div class="dashboard-grid">
+        <!-- Tarjeta de Alumnos -->
+        <div class="dashboard-card">
+          <div class="card-icon">
+            <i class='bx bxs-graduation'></i>
+          </div>
+          <div class="card-content">
+            <h3>Alumnos Inscriptos</h3>
+            <p class="count"><?php echo $alumnos['total_alumnos'] ?? 0; ?></p>
+          </div>
+        </div>
 
-<div class="container">
-    <div class="data-box">
-        <h3>Materias</h3>
-        <ul>
-            <?php foreach ($materias as $materia): ?>
+        <!-- Tarjeta de Materias -->
+        <div class="dashboard-card">
+          <div class="card-icon">
+            <i class='bx bxs-book'></i>
+          </div>
+          <div class="card-content">
+            <h3>Materias</h3>
+            <p class="count"><?php echo count($materias); ?></p>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Institutos -->
+        <div class="dashboard-card">
+          <div class="card-icon">
+            <i class='bx bxs-school'></i>
+          </div>
+          <div class="card-content">
+            <h3>Institutos</h3>
+            <p class="count"><?php echo count($institutos); ?></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección de Listados -->
+      <div class="lists-container">
+        <!-- Lista de Materias -->
+        <div class="list-box">
+          <div class="list-header">
+            <h3><i class='bx bxs-book-open'></i> Materias Registradas</h3>
+          </div>
+          <ul class="styled-list">
+            <?php if (!empty($materias)): ?>
+              <?php foreach ($materias as $materia): ?>
                 <li>
-                    <?php echo $materia['nombre_materia']; ?>
+                  <i class='bx bxs-bookmark'></i>
+                  <span><?php echo htmlspecialchars($materia['nombre_materia']); ?></span>
                 </li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-</div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <li class="no-items">No hay materias registradas</li>
+            <?php endif; ?>
+          </ul>
+        </div>
 
-<div class="container">
-    <div class="data-box">
-        <h3>Institutos</h3>
-        <ul>
-            <?php foreach ($institutos as $instituto): ?>
+        <!-- Lista de Institutos -->
+        <div class="list-box">
+          <div class="list-header">
+            <h3><i class='bx bxs-building-house'></i> Institutos</h3>
+          </div>
+          <ul class="styled-list">
+            <?php if (!empty($institutos)): ?>
+              <?php foreach ($institutos as $instituto): ?>
                 <li>
-                    <?php echo $instituto['nombre_instituto']; ?>
+                  <i class='bx bxs-school'></i>
+                  <span><?php echo htmlspecialchars($instituto['nombre_instituto']); ?></span>
                 </li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-</div>
-
-
+              <?php endforeach; ?>
+            <?php else: ?>
+              <li class="no-items">No hay institutos registrados</li>
+            <?php endif; ?>
+          </ul>
+        </div>
+      </div>
 
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
