@@ -37,6 +37,35 @@ body {
   max-width: calc(100% - 120px); /* Ensure content doesn't touch the edges */
 }
 
+/* Logo styles */
+.logo-link {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: var(--transition);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1rem;
+}
+
+.logo-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-right: 0.75rem;
+  color: var(--primary-color);
+}
+
+.logo-img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
 /* Sección de bienvenida */
 .welcome-section {
   text-align: center;

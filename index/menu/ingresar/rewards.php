@@ -34,8 +34,8 @@
 <body>
 <div class="container">
     <div class="sidebar">
-     <span class="logo">S</span>
-     <img src="../../resources/img/Logo Firme como Rulo.png" alt="logo"><a class="logo-expand" href="../../menu/menu.php">Firme Como Rulo</a></img>
+     <a href="../../menu/menu.php" class="logo">S</a>
+     <a href="../../menu/menu.php"><img src="../../resources/img/Logo Firme como Rulo.png" alt="logo" class="logo-expand"></a>
      <div class="side-wrapper">
       <div class="side-title">MENU</div>
       <div class="side-menu">
