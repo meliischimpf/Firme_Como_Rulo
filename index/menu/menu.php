@@ -95,7 +95,7 @@
 
       <div class="welcome-section">
         <h2>Bienvenido</h2>
-        <p class="welcome-text">Sistema de Gestión Escolar</p>
+        <p class="welcome-text">Firme como Rulo - Sistema de Gestión Escolar</p>
       </div>
 
       <div class="dashboard-grid">
