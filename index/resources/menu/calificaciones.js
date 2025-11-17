@@ -249,12 +249,67 @@ function getGradeClass(grade) {
     return 'grade-fail';
 }
 
-// Initialize
+// Función para cargar las calificaciones existentes
+async function cargarCalificaciones() {
+    try {
+        const idMateria = document.querySelector('input[name="id_materia"]')?.value;
+        if (!idMateria) {
+            console.warn('No se encontró el ID de la materia');
+            return;
+        }
+
+        const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, -3).join('/');
+        const url = new URL(`index/menu/ingresar/guardar_calificaciones.php?id_materia=${idMateria}`, baseUrl).toString();
+        
+        console.log('Cargando calificaciones desde:', url);
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && data.data) {
+            console.log('Calificaciones cargadas:', data.data);
+            llenarCamposCalificaciones(data.data);
+        } else {
+            console.error('Error al cargar calificaciones:', data.message || 'Error desconocido');
+        }
+    } catch (error) {
+        console.error('Error al cargar calificaciones:', error);
+    }
+}
+
+// Función para llenar los campos con las calificaciones existentes
+function llenarCamposCalificaciones(calificaciones) {
+    Object.entries(calificaciones).forEach(([alumnoId, notas]) => {
+        Object.entries(notas).forEach(([tipoNota, valor]) => {
+            if (valor !== null) {
+                const input = document.querySelector(`input[name="notas[${alumnoId}][${tipoNota}]"]`);
+                if (input) {
+                    input.value = valor;
+                    // Si es parcial1 o parcial2, calcular el promedio
+                    if (tipoNota === 'parcial1' || tipoNota === 'parcial2') {
+                        calcularPromedio(input);
+                    }
+                }
+            }
+        });
+    });
+}
+
+// Inicialización
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('form-calificaciones');
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
         });
+        
+        // Cargar calificaciones existentes al iniciar
+        cargarCalificaciones();
     }
 });

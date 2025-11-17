@@ -822,3 +822,331 @@
 )
 
 2025-11-17 13:02:31 - Intentando incluir: C:\laragon\www\Repo 2do\Firme como Rulo\index/conexion.php
+2025-11-17 13:05:14 - Raw input: 
+2025-11-17 13:05:14 - JSON decode error: Syntax error
+2025-11-17 13:05:14 - Processed data: Array
+(
+)
+
+2025-11-17 13:05:14 - Error: ID de materia es requerido
+2025-11-17 13:05:37 - Raw input: 
+2025-11-17 13:05:37 - JSON decode error: Syntax error
+2025-11-17 13:05:37 - Processed data: Array
+(
+)
+
+2025-11-17 13:05:37 - Error: ID de materia es requerido
+2025-11-17 13:07:01 - Raw input: {"id_materia":"1","notas":{"2":{"parcial1":6,"parcial2":null,"final":null}}}
+2025-11-17 13:07:01 - Processed data: Array
+(
+    [id_materia] => 1
+    [notas] => Array
+        (
+            [2] => Array
+                (
+                    [parcial1] => 6
+                    [parcial2] => 
+                    [final] => 
+                )
+
+        )
+
+)
+
+2025-11-17 13:07:01 - Processing materia ID: 1
+2025-11-17 13:07:01 - Notas: Array
+(
+    [2] => Array
+        (
+            [parcial1] => 6
+            [parcial2] => 
+            [final] => 
+        )
+
+)
+
+2025-11-17 13:07:01 - Intentando incluir: C:\laragon\www\Repo 2do\Firme como Rulo\index/conexion.php
+2025-11-17 13:07:02 - Raw input: {"id_materia":"1","notas":{"2":{"parcial1":6,"parcial2":8,"final":null}}}
+2025-11-17 13:07:02 - Processed data: Array
+(
+    [id_materia] => 1
+    [notas] => Array
+        (
+            [2] => Array
+                (
+                    [parcial1] => 6
+                    [parcial2] => 8
+                    [final] => 
+                )
+
+        )
+
+)
+
+2025-11-17 13:07:02 - Processing materia ID: 1
+2025-11-17 13:07:02 - Notas: Array
+(
+    [2] => Array
+        (
+            [parcial1] => 6
+            [parcial2] => 8
+            [final] => 
+        )
+
+)
+
+2025-11-17 13:07:02 - Intentando incluir: C:\laragon\www\Repo 2do\Firme como Rulo\index/conexion.php
+2025-11-17 13:07:04 - Raw input: {"id_materia":"1","notas":{"2":{"parcial1":6,"parcial2":8,"final":10}}}
+2025-11-17 13:07:04 - Processed data: Array
+(
+    [id_materia] => 1
+    [notas] => Array
+        (
+            [2] => Array
+                (
+                    [parcial1] => 6
+                    [parcial2] => 8
+                    [final] => 10
+                )
+
+        )
+
+)
+
+2025-11-17 13:07:04 - Processing materia ID: 1
+2025-11-17 13:07:04 - Notas: Array
+(
+    [2] => Array
+        (
+            [parcial1] => 6
+            [parcial2] => 8
+            [final] => 10
+        )
+
+)
+
+2025-11-17 13:07:04 - Intentando incluir: C:\laragon\www\Repo 2do\Firme como Rulo\index/conexion.php
+2025-11-17 13:07:06 - Raw input: {"id_materia":"1","notas":{"3":{"parcial1":5,"parcial2":null,"final":null}}}
+2025-11-17 13:07:06 - Processed data: Array
+(
+    [id_materia] => 1
+    [notas] => Array
+        (
+            [3] => Array
+                (
+                    [parcial1] => 5
+                    [parcial2] => 
+                    [final] => 
+                )
+
+        )
+
+)
+
+2025-11-17 13:07:06 - Processing materia ID: 1
+2025-11-17 13:07:06 - Notas: Array
+(
+    [3] => Array
+        (
+            [parcial1] => 5
+            [parcial2] => 
+            [final] => 
+        )
+
+)
+
+2025-11-17 13:07:06 - Intentando incluir: C:\laragon\www\Repo 2do\Firme como Rulo\index/conexion.php
+2025-11-17 13:07:06 - Raw input: {"id_materia":"1","notas":{"3":{"parcial1":5,"parcial2":7,"final":null}}}
+2025-11-17 13:07:06 - Processed data: Array
+(
+    [id_materia] => 1
+    [notas] => Array
+        (
+            [3] => Array
+                (
+                    [parcial1] => 5
+                    [parcial2] => 7
+                    [final] => 
+                )
+
+        )
+
+)
+
+2025-11-17 13:07:06 - Processing materia ID: 1
+2025-11-17 13:07:06 - Notas: Array
+(
+    [3] => Array
+        (
+            [parcial1] => 5
+            [parcial2] => 7
+            [final] => 
+        )
+
+)
+
+2025-11-17 13:07:06 - Intentando incluir: C:\laragon\www\Repo 2do\Firme como Rulo\index/conexion.php
+2025-11-17 13:07:08 - Raw input: {"id_materia":"1","notas":{"3":{"parcial1":5,"parcial2":7,"final":8}}}
+2025-11-17 13:07:08 - Processed data: Array
+(
+    [id_materia] => 1
+    [notas] => Array
+        (
+            [3] => Array
+                (
+                    [parcial1] => 5
+                    [parcial2] => 7
+                    [final] => 8
+                )
+
+        )
+
+)
+
+2025-11-17 13:07:08 - Processing materia ID: 1
+2025-11-17 13:07:08 - Notas: Array
+(
+    [3] => Array
+        (
+            [parcial1] => 5
+            [parcial2] => 7
+            [final] => 8
+        )
+
+)
+
+2025-11-17 13:07:08 - Intentando incluir: C:\laragon\www\Repo 2do\Firme como Rulo\index/conexion.php
+2025-11-17 13:07:26 - Raw input: {"id_materia":"1","notas":{"4":{"parcial1":null,"parcial2":null,"final":null}}}
+2025-11-17 13:07:26 - Processed data: Array
+(
+    [id_materia] => 1
+    [notas] => Array
+        (
+            [4] => Array
+                (
+                    [parcial1] => 
+                    [parcial2] => 
+                    [final] => 
+                )
+
+        )
+
+)
+
+2025-11-17 13:07:26 - Processing materia ID: 1
+2025-11-17 13:07:26 - Notas: Array
+(
+    [4] => Array
+        (
+            [parcial1] => 
+            [parcial2] => 
+            [final] => 
+        )
+
+)
+
+2025-11-17 13:07:26 - Intentando incluir: C:\laragon\www\Repo 2do\Firme como Rulo\index/conexion.php
+2025-11-17 13:07:33 - Raw input: 
+2025-11-17 13:07:33 - JSON decode error: Syntax error
+2025-11-17 13:07:33 - Processed data: Array
+(
+)
+
+2025-11-17 13:07:33 - Error: ID de materia es requerido
+2025-11-17 13:08:04 - Raw input: {"id_materia":"1","notas":{"4":{"parcial1":8,"parcial2":null,"final":null}}}
+2025-11-17 13:08:04 - Processed data: Array
+(
+    [id_materia] => 1
+    [notas] => Array
+        (
+            [4] => Array
+                (
+                    [parcial1] => 8
+                    [parcial2] => 
+                    [final] => 
+                )
+
+        )
+
+)
+
+2025-11-17 13:08:04 - Processing materia ID: 1
+2025-11-17 13:08:04 - Notas: Array
+(
+    [4] => Array
+        (
+            [parcial1] => 8
+            [parcial2] => 
+            [final] => 
+        )
+
+)
+
+2025-11-17 13:08:04 - Intentando incluir: C:\laragon\www\Repo 2do\Firme como Rulo\index/conexion.php
+2025-11-17 13:08:05 - Raw input: {"id_materia":"1","notas":{"4":{"parcial1":8,"parcial2":6,"final":null}}}
+2025-11-17 13:08:05 - Processed data: Array
+(
+    [id_materia] => 1
+    [notas] => Array
+        (
+            [4] => Array
+                (
+                    [parcial1] => 8
+                    [parcial2] => 6
+                    [final] => 
+                )
+
+        )
+
+)
+
+2025-11-17 13:08:05 - Processing materia ID: 1
+2025-11-17 13:08:05 - Notas: Array
+(
+    [4] => Array
+        (
+            [parcial1] => 8
+            [parcial2] => 6
+            [final] => 
+        )
+
+)
+
+2025-11-17 13:08:05 - Intentando incluir: C:\laragon\www\Repo 2do\Firme como Rulo\index/conexion.php
+2025-11-17 13:08:06 - Raw input: {"id_materia":"1","notas":{"4":{"parcial1":8,"parcial2":6,"final":10}}}
+2025-11-17 13:08:06 - Processed data: Array
+(
+    [id_materia] => 1
+    [notas] => Array
+        (
+            [4] => Array
+                (
+                    [parcial1] => 8
+                    [parcial2] => 6
+                    [final] => 10
+                )
+
+        )
+
+)
+
+2025-11-17 13:08:06 - Processing materia ID: 1
+2025-11-17 13:08:06 - Notas: Array
+(
+    [4] => Array
+        (
+            [parcial1] => 8
+            [parcial2] => 6
+            [final] => 10
+        )
+
+)
+
+2025-11-17 13:08:06 - Intentando incluir: C:\laragon\www\Repo 2do\Firme como Rulo\index/conexion.php
+2025-11-17 13:08:10 - Raw input: 
+2025-11-17 13:08:10 - JSON decode error: Syntax error
+2025-11-17 13:08:10 - Processed data: Array
+(
+)
+
+2025-11-17 13:08:10 - Error: ID de materia es requerido
