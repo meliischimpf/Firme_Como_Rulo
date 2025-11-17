@@ -37,29 +37,29 @@ CREATE TABLE IF NOT EXISTS `alumno` (
 
 -- Volcando datos para la tabla firme_como_rulo.alumno: ~23 rows (aproximadamente)
 INSERT INTO `alumno` (`id_alumno`, `apellido_alumno`, `nombre_alumno`, `dni_alumno`, `mail_alumno`, `fecha_nacimiento_alumno`, `id_materia`) VALUES
-	(1, 'Andrade', 'Valentino', '35123456', 'valentino.andrade@ejemplo.com', '1999-03-12', 1),
-	(2, 'Cedres', 'Lucas', '34876543', 'lucas.cedres@ejemplo.com', '1998-09-07', 1),
-	(3, 'Figun', 'Facundo', '40123789', 'facundo.figun@ejemplo.com', '2000-11-25', 1),
-	(4, 'Giordano', 'Luca', '32456789', 'luca.giordano@ejemplo.com', '1997-06-02', 1),
-	(5, 'Godoy', 'Bruno', '36789123', 'bruno.godoy@ejemplo.com', '1999-01-18', 1),
-	(6, 'Gomez', 'Agustin', '33567890', 'agustin.gomez@ejemplo.com', '1996-04-30', 1),
-	(7, 'Gonzalez', 'Brian', '35678901', 'brian.gonzalez@ejemplo.com', '1997-12-05', 1),
-	(8, 'Guigou Scottini', 'Federico', '37890123', 'federico.guigou@ejemplo.com', '1998-08-15', 1),
-	(9, 'Marrano', 'Luna', '38901234', 'luna.marrano@ejemplo.com', '1999-03-10', 1),
-	(10, 'Mercado Aviles', 'Giuliana', '33345678', 'giuliana.mercado@ejemplo.com', '1995-10-22', 1),
-	(11, 'Mercado Ruiz', 'Lucila', '32567890', 'lucila.mercado@ejemplo.com', '1996-12-08', 1),
-	(12, 'Murillo', 'Angel', '34890123', 'angel.murillo@ejemplo.com', '1998-02-27', 1),
-	(13, 'Nissero', 'Juan', '36123456', 'juan.nissero@ejemplo.com', '1999-07-17', 1),
-	(14, 'Parada', 'Fausto', '35234567', 'fausto.parada@ejemplo.com', '1997-11-06', 1),
-	(15, 'Piter', 'Ignacio', '32789012', 'ignacio.piter@ejemplo.com', '1996-05-19', 1),
-	(16, 'Planchon', 'Tomas', '40456789', 'tomas.planchon@ejemplo.com', '2000-09-03', 1),
-	(17, 'Ronconi', 'Elisa', '31678123', 'elisa.ronconi@ejemplo.com', '1995-01-24', 1),
-	(18, 'Sanchez', 'Exequiel', '33234567', 'exequiel.sanchez@ejemplo.com', '1998-04-11', 1),
-	(19, 'Schimpf Baldo', 'Melina', '33789456', 'melina.schimpf@ejemplo.com', '2003-06-02', 1),
-	(20, 'Segovia', 'Diego', '34567890', 'diego.segovia@ejemplo.com', '1997-02-13', 1),
-	(21, 'Sittner', 'Camila', '36456789', 'camila.sittner@ejemplo.com', '1999-08-20', 1),
-	(22, 'Villa', 'Yamil', '35345678', 'yamil.villa@ejemplo.com', '1998-06-28', 1),
-	(23, 'Zabala', 'Daniel', '32313231', 'zabala.danlel@ejemplo.com', '2001-01-13', 1);
+	(1, 'Rodriguez', 'Matias', '35123456', 'matias.rodriguez@ejemplo.com', '1999-03-12', 1),
+	(2, 'Martinez', 'Lucas', '34876543', 'lucas.martinez@ejemplo.com', '1998-09-07', 1),
+	(3, 'Lopez', 'Valentina', '40123789', 'valentina.lopez@ejemplo.com', '2000-11-25', 1),
+	(4, 'Fernandez', 'Sofia', '32456789', 'sofia.fernandez@ejemplo.com', '1997-06-02', 1),
+	(5, 'Diaz', 'Thiago', '36789123', 'thiago.diaz@ejemplo.com', '1999-01-18', 1),
+	(6, 'Alvarez', 'Emma', '33567890', 'emma.alvarez@ejemplo.com', '1996-04-30', 1),
+	(7, 'Torres', 'Benjamin', '35678901', 'benjamin.torres@ejemplo.com', '1997-12-05', 1),
+	(8, 'Flores', 'Catalina', '37890123', 'catalina.flores@ejemplo.com', '1998-08-15', 1),
+	(9, 'Gutierrez', 'Agustina', '38901234', 'agustina.gutierrez@ejemplo.com', '1999-03-10', 1),
+	(10, 'Ramos', 'Joaquin', '33345678', 'joaquin.ramos@ejemplo.com', '1995-10-22', 1),
+	(11, 'Acosta', 'Victoria', '32567890', 'victoria.acosta@ejemplo.com', '1996-12-08', 1),
+	(12, 'Molina', 'Tomas', '34890123', 'tomas.molina@ejemplo.com', '1998-02-27', 1),
+	(13, 'Ortiz', 'Martina', '36123456', 'martina.ortiz@ejemplo.com', '1999-07-17', 1),
+	(14, 'Medina', 'Lautaro', '35234567', 'lautaro.medina@ejemplo.com', '1997-11-06', 1),
+	(15, 'Vera', 'Mia', '32789012', 'mia.vera@ejemplo.com', '1996-05-19', 1),
+	(16, 'Rojas', 'Santino', '40456789', 'santino.rojas@ejemplo.com', '2000-09-03', 1),
+	(17, 'Castro', 'Isabella', '31678123', 'isabella.castro@ejemplo.com', '1995-01-24', 1),
+	(18, 'Gimenez', 'Bautista', '33234567', 'bautista.gimenez@ejemplo.com', '1998-04-11', 1),
+	(19, 'Vargas', 'Emilia', '33789456', 'emilia.vargas@ejemplo.com', '2003-06-02', 1),
+	(20, 'Reyes', 'Mateo', '34567890', 'mateo.reyes@ejemplo.com', '1997-02-13', 1),
+	(21, 'Mendez', 'Valentino', '36456789', 'valentino.mendez@ejemplo.com', '1999-08-20', 1),
+	(22, 'Pereyra', 'Jazmin', '35345678', 'jazmin.pereyra@ejemplo.com', '1998-06-28', 1),
+	(23, 'Luna', 'Dylan', '32313231', 'dylan.luna@ejemplo.com', '2001-01-13', 1);
 
 -- Volcando estructura para tabla firme_como_rulo.asistencias
 CREATE TABLE IF NOT EXISTS `asistencias` (
@@ -964,7 +964,7 @@ CREATE TABLE IF NOT EXISTS `profesores` (
 
 -- Volcando datos para la tabla firme_como_rulo.profesores: ~1 rows (aproximadamente)
 INSERT INTO `profesores` (`id_profesor`, `nombre_profesor`, `apellido_profesor`, `dni_profesor`, `legajo_profesor`, `id_instituto`, `id_materia`) VALUES
-	(1, 'Melina', 'Schimpf', '45338356', '001', 1, 1);
+	(1, 'Profesor', 'Test', '12345678', '001', 1, 1);
 
 -- Volcando estructura para tabla firme_como_rulo.usuarios
 CREATE TABLE IF NOT EXISTS `usuarios` (

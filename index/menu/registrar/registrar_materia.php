@@ -1,7 +1,7 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Firme_Como_Rulo/index/conexion.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Firme_Como_Rulo/index/clases/Materia.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Firme_Como_Rulo/index/clases/Instituto.php';
+require_once __DIR__ . '/../../conexion.php';
+require_once __DIR__ . '/../../clases/Materia.php';
+require_once __DIR__ . '/../../clases/Instituto.php';
 
 $db = new Database();
 $conn = $db->connect();

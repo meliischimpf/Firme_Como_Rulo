@@ -4,7 +4,7 @@ class Database {
     private $host = '127.0.0.1';
     private $db_name = 'firme_como_rulo';
     private $username = 'root';
-    private $password = '';
+    private $password = '1234';
     public $conn;
 
     public function connect() {
